@@ -1,0 +1,17 @@
+---
+
+- name: install tmux
+  apt:
+    name: tmux
+    state: latest
+    cache_valid_time: 3600  # 1 hour
+
+- name: clone dotfiles
+  repo:
+    repo: 'https://github.com/seanjh/dotfiles.git'
+    dest: ~/dotfiles
+
+- name: link tmux config to dotfiles
+  file:
+    src: ~/dotfiles/tmux.conf
+    dest: ~/.tmux.conf
