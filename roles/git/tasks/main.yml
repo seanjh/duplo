@@ -1,0 +1,12 @@
+---
+
+- name: git config
+  template:
+    src: gitconfig.j2
+    dest: $HOME/.config/git/config
+    mode: u=rwx,g=,o=
+
+- name: git ignore
+  file:
+    src: gitignore
+    dest: $HOME/.config/git/ignore

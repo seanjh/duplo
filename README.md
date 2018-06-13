@@ -1,1 +1,2 @@
-# duplo
+# Duplo
+Personal bootstrapping helpers.

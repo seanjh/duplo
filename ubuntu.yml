@@ -1,0 +1,16 @@
+---
+- hosts: localhost
+  connection: local
+  roles:
+    - name: zsh
+      tags: zsh
+    - name: vim
+      tags: vim
+    - name: tmux
+      tags: tmux
+    - name: git
+      tags: git
+    - name: python
+      tags: python
+    - name: chrome
+      tags: chrome
