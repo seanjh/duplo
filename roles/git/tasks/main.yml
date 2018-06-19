@@ -1,12 +1,17 @@
 ---
 
+- name: create git config path
+  file:
+    path: ~/.config/git
+    state: directory
+
 - name: git config
   template:
     src: gitconfig.j2
-    dest: $HOME/.config/git/config
+    dest: ~/.config/git/config
     mode: u=rwx,g=,o=
 
 - name: git ignore
-  file:
-    src: gitignore
-    dest: $HOME/.config/git/ignore
+  copy:
+    src: gitignore.txt
+    dest: ~/.config/git/ignore

@@ -1,25 +1,32 @@
 ---
+
 - name: fetch oh-my-zsh
   git:
-    repo: 'https://github.com/robbyrussell/oh-my-zsh.git'
+    repo: https://github.com/robbyrussell/oh-my-zsh.git
     dest: ~/.oh-my-zsh
     update: no
   register: clone
 
+- name: check for zshrc
+  stat:
+    path: ~/.zshrc
+  register: rcfile
+
 - name: configure oh-my-zsh
-  when: clone is changed
+  when: clone is changed or not rcfile.stat.exists
   block:
     - name: populate zshrc
-      file:
+      copy:
         src: ~/.oh-my-zsh/templates/zshrc.zsh-template
         dest: ~/.zshrc
 
     - name: switch to zshrc
+      become: true
       user:
         name: sean
         shell: /bin/zsh
 
 - name: enable lesspipe
-  file:
+  copy:
     src: lesspipe.sh
-    dest: ~/.oh-my-zsh/custom/lesspipe.sh
+    dest: ~/.oh-my-zsh/custom/lesspipe.zsh

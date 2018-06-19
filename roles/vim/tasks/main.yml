@@ -1,28 +1,30 @@
 ---
 
 - name: install vim
+  become: true
   apt:
     name: vim
     state: latest
-    cache_valid_time: 3600  # 1 hour
+    cache_valid_time: 3600
 
 - name: clone dotfiles
-  repo:
-    repo: 'https://github.com/seanjh/dotfiles.git'
+  git:
+    repo: https://github.com/seanjh/dotfiles.git
     dest: ~/dotfiles
 
 - name: link vim config to dotfiles
   file:
-    src: ~/dotfiles/vim
+    src: ~/dotfiles/vim/
     dest: ~/.vim
+    state: link
 
 - name: setup vundle
   git:
-    repo: 'https://github.com/VundleVim/Vundle.vim.git' 
+    repo: https://github.com/VundleVim/Vundle.vim.git
     dest: ~/dotfiles/vim/bundle/Vundle.vim
     update: no
   register: clone
 
 - name: install vim plugins
-  shell: vim +PluginInstall +qall
+  shell: 'vim +PluginInstall +qall'
   when: clone is changed
