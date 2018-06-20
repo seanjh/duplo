@@ -1,0 +1,75 @@
+---
+
+- name: set python filename
+  set_fact:
+    filename: 'Python-{{ item.version }}.tgz'
+    build_path: '/tmp/Python-{{ item.version }}'
+    output_path: '/opt/{{ item.python }}/{{ item.version }}'
+    current_path: '/opt/{{ item.python }}/current'
+
+- name: check for python build
+  stat:
+    path: '{{ output_path }}'
+  register: result
+
+- name: get python
+  when: not result.stat.exists
+  block:
+
+    - name: download python
+      get_url:
+        url: 'https://www.python.org/ftp/python/{{ item.version }}/{{ filename }}'
+        dest: '/tmp/{{ filename }}'
+
+    - name: decompress python
+      unarchive:
+        src: '/tmp/{{ filename }}'
+        dest: '/tmp'
+
+    - name: create python destinations
+      become: true
+      file:
+        path: '{{ output_path }}'
+        state: directory
+        recurse: true
+        owner: sean
+        group: sean
+        mode: u=rwx,g=rx,o=rx
+
+    - name: build python from source
+      block:
+        - name: prepare python build
+          shell: './configure --prefix={{ output_path }}'
+          args:
+            chdir: '{{ build_path }}'
+
+        - name: build python
+          shell: 'make {{ build_item }}'
+          args:
+            chdir: '{{ build_path }}'
+          with_items:
+            - all
+            - install
+          loop_control:
+            loop_var: build_item
+
+    - name: create current python link
+      file:
+        src: '{{ output_path }}'
+        dest: '{{ current_path }}'
+        state: link
+
+- name: ensure pip exists
+  shell: '{{ current_path }}/bin/{{ item.python }} -m ensurepip --upgrade'
+
+- name: install pip packages
+  shell: '{{ current_path }}/bin/{{ item.pip }} install --upgrade {{ pip_item }}'
+  with_items:
+    - ipython
+  loop_control:
+    loop_var: pip_item
+
+- name: add pythons to PATH
+  copy:
+    src: python.sh
+    dest: ~/.oh-my-zsh/custom/python.zsh

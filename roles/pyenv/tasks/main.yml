@@ -1,5 +1,15 @@
 ---
 
+- name: install dependencies
+  become: true
+  apt:
+    name: '{{ item }}'
+    cache_valid_time: 3600
+    state: latest
+  with_items:
+    - zlibc
+    - zlib1g-dev
+
 - name: clone the pyenv repo
   git:
     repo: https://github.com/pyenv/pyenv.git

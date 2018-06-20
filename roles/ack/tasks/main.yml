@@ -1,0 +1,8 @@
+---
+
+- name: install ack
+  become: true
+  apt:
+    name: ack
+    cache_valid_time: 3600
+    state: latest
