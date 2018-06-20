@@ -1,0 +1,3 @@
+pyenv_default_versions:
+  - 3.6.5
+  - 2.7.15

@@ -57,4 +57,4 @@
     path: ~/.zshrc
     regexp: 'export PATH=.*'
     line: >-
-      exports PATH="$HOME/python/python3/current/bin:$PATH"
+      export PATH="$HOME/python/python3/current/bin:$PATH"

@@ -1,0 +1,16 @@
+---
+
+- name: clone the pyenv repo
+  git:
+    repo: https://github.com/pyenv/pyenv.git
+    dest: ~/.pyenv
+    update: false
+
+- name: expose pyenv environment variables
+  copy:
+    src: pyenv.sh
+    dest: ~/.oh-my-zsh/custom/pyenv.zsh
+
+- name: install pyenv default versions
+  shell: 'pyenv install {{ item }}'
+  with_items: '{{ pyenv_default_versions | default([]) }}'
