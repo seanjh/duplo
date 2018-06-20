@@ -7,8 +7,22 @@
     cache_valid_time: 3600
     state: latest
   with_items:
+    - make
+    - build-essential
+    - libssl-dev 
+    - libbz2-dev
     - zlibc
     - zlib1g-dev
+    - libreadline-dev
+    - libsqlite3-dev
+    - wget
+    - curl
+    - llvm
+    - libncurses5-dev
+    - libncursesw5-dev 
+    - xz-utils
+    - tk-dev
+    - libffi-dev
 
 - name: clone the pyenv repo
   git:
@@ -21,6 +35,12 @@
     src: pyenv.sh
     dest: ~/.oh-my-zsh/custom/pyenv.zsh
 
+- name: list pyenv versions
+  shell: pyenv versions --bare --skip-aliases
+  changed_when: false
+  register: result
+
 - name: install pyenv default versions
   shell: 'pyenv install {{ item }}'
+  when: item not in result.stdout
   with_items: '{{ pyenv_default_versions | default([]) }}'

@@ -1,0 +1,8 @@
+---
+
+- name: install java
+  become: true
+  apt:
+    name: openjdk-8-jdk
+    state: latest
+    cache_valid_time: 3600
