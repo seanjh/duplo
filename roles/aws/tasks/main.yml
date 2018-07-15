@@ -1,0 +1,31 @@
+---
+
+- name: install aws cli
+  pip:
+    name: awscli
+    state: latest
+    executable: /opt/python3/current/bin/pip3
+
+- name: create the aws config diretory
+  file:
+    path: ~/.aws
+    state: directory
+    owner: sean
+    group: sean
+    mode: o=rwx,g=rwx,o=
+
+- name: create the aws config file
+  copy:
+    src: config.ini
+    dest: ~/.aws/config
+    owner: sean
+    group: sean
+    mode: o=rwx,g=rwx,o=
+
+- name: create the aws credentials file
+  template:
+    src: credentials.ini.j2
+    dest: ~/.aws/credentials
+    owner: sean
+    group: sean
+    mode: o=rw,g=rw,o=

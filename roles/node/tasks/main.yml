@@ -1,0 +1,91 @@
+---
+
+- name: install node requirements
+  become: true
+  apt:
+    name: '{{ item }}'
+    state: latest
+  with_items:
+    - build-essential
+    - clang
+
+- name: set node filename
+  set_fact:
+    filename: 'node-v{{ node_version }}.tar.gz'
+    build_path: '/tmp/node-v{{ node_version }}'
+    output_path: '/opt/node/{{ node_version }}'
+    current_path: '/opt/node/current'
+
+- debug: var=output_path
+
+- name: check for node build
+  stat:
+    path: '{{ output_path }}'
+  register: version_result
+
+- name: check for current node
+  stat:
+    path: '{{ current_path }}'
+  register: current_result
+
+- name: get node
+  when: not version_result.stat.exists or not current_result.stat.exists
+  block:
+
+    - name: download node source
+      get_url:
+        url: 'https://nodejs.org/dist/v{{ node_version }}/node-v{{ node_version}}.tar.gz'
+        dest: '/tmp/{{ filename }}'
+
+    - name: decompress node source
+      unarchive:
+        src: '/tmp/{{ filename }}'
+        dest: '/tmp'
+
+    - name: create node destinations
+      become: true
+      file:
+        path: '{{ output_path }}'
+        state: directory
+        recurse: true
+        owner: sean
+        group: sean
+        mode: u=rwx,g=rx,o=rx
+
+    - name: build node from source
+      block:
+        - name: prepare node build
+          shell: './configure --prefix={{ output_path }} --with-intl=full-icu --download=all'
+          args:
+            chdir: '{{ build_path }}'
+
+        - name: build node
+          shell: 'make -j4 {{ build_item }}'
+          args:
+            chdir: '{{ build_path }}'
+          with_items:
+            - ''
+            - doc
+            - install
+          loop_control:
+            loop_var: build_item
+
+    - name: create current node link
+      file:
+        src: '{{ output_path }}'
+        dest: '{{ current_path }}'
+        state: link
+
+- debug: var=output_path
+- debug: var=current_path
+
+- name: add node to PATH
+  copy:
+    src: node.sh
+    dest: ~/.oh-my-zsh/custom/node.zsh
+
+- name: update npm
+  shell: '{{ current_path }}/bin/npm install -g npm@latest'
+
+- name: install yarn
+  shell: '{{ current_path }}/bin/npm install -g yarn@latest'

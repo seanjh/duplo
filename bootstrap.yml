@@ -8,5 +8,8 @@
     - git
     - python
     - pyenv
+    - name: node
+      tags: node
     - java
     - chrome
+    - aws
