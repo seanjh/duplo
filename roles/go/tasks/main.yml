@@ -1,0 +1,11 @@
+---
+
+- name: set golang paths
+  set_fact:
+    output_path: '/opt/go{{ golang_version }}'
+    download_path: '/tmp/go{{ golang_version }}.tar.gz'
+
+- name: download golang distribution
+  get_url:
+    url: '{{ golang_url }}'
+    dest: '/tmp/go{{ golang_version }}'

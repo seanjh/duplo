@@ -1,15 +1,18 @@
 ---
+
 - hosts: local
   roles:
-    - zsh
+    #- zsh
     - ack
     - vim
     - tmux
     - git
     - python
     - pyenv
-    - name: node
-      tags: node
+    - node
     - java
     - chrome
-    - aws
+    #- aws
+    - go
+
+# TODO(sean): docker

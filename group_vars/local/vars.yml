@@ -1,3 +1,19 @@
 ---
-python3_version: 3.7.0
-python2_version: 2.7.15
+
+python_3_versions:
+  - 3.7.2
+  - 3.5.6
+  - 3.6.6
+python_3_current_version: 3.7.2
+python_3_globals:
+  - pipenv
+  - setuptools
+
+python_2_versions:
+  - 2.7.15
+python_2_current_version: 2.7.15
+python_2_globals: []
+
+golang_version: 1.12
+golang_filename: 'go{{ golang_version }}.linux-amd64.tar.gz'
+golang_url: 'https://dl.google.com/go/{{ golang_filename }}'

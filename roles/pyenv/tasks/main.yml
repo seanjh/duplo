@@ -3,13 +3,13 @@
 - name: install dependencies
   become: true
   apt:
-    name: '{{ item }}'
+    name: "{{ packages }}"
     cache_valid_time: 3600
-    state: latest
-  with_items:
+  vars:
+    packages:
     - make
     - build-essential
-    - libssl-dev 
+    - libssl-dev
     - libbz2-dev
     - zlibc
     - zlib1g-dev
@@ -19,7 +19,7 @@
     - curl
     - llvm
     - libncurses5-dev
-    - libncursesw5-dev 
+    - libncursesw5-dev
     - xz-utils
     - tk-dev
     - libffi-dev
